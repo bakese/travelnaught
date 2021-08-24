@@ -9,7 +9,10 @@ const App = () => {
 
   const searchFlight = () => {
     axios.get('/offer_request')
-    .then((response) => console.log('success'))
+    .then((response) => {
+      // console.log('success', response.data)
+      setFlights(response.data)
+    })
     .catch((err) => console.error(err))
   }
 
@@ -17,7 +20,12 @@ const App = () => {
     <div>
       <h1>Travelnaughts</h1>
       <button onClick={searchFlight}>Search flight</button>
-      <Flight />
+
+      {flights.map((flight, i) => {
+        return <Flight key={i} flightInfo={flight}/>
+      })}
+
+
     </div>
   )
 
