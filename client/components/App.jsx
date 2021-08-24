@@ -1,17 +1,14 @@
 import React from 'react';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+const App = () => {
 
-  render() {
-    return (
-      <div>
-        <h1>App.js is connected and working!</h1>
-      </div>
-    )
-  }
+
+  return (
+    <div>
+      <h1>App.js is connected and working!</h1>
+    </div>
+  )
+
 }
 
 export default App;
