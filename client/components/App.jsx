@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Flight from './Flight.jsx';
-
+import LoaderModal from './LoaderModal.jsx';
 
 
 const App = () => {
@@ -11,9 +11,11 @@ const App = () => {
   const [destination, setDestination] = useState('')
   const [departDate, setDepartDate] = useState('')
   const [returnDate, setReturnDate] = useState('')
+  const [loaderModal, setLoaderModal] = useState(false)
 
   const searchFlights = () => {
     event.preventDefault()
+    setLoaderModal(true)
     // console.log(origin, destination, departDate, returnDate)
 
     var data =  {
@@ -28,8 +30,12 @@ const App = () => {
     })
     .then((response) => {
       setFlights(response.data)
+      setLoaderModal(false)
     })
-    .catch((err) => console.error(err))
+    .catch((err) => {
+      console.error(err)
+      setLoaderModal(false)
+    })
   }
 
   const bookFlight = (flightInfo) => {
@@ -56,15 +62,15 @@ const App = () => {
         <input placeholder="Destination" value={destination} onChange={(e) => setDestination(e.target.value)}/>
         <input placeholder="Depart Date" value={departDate} onChange={(e) => setDepartDate(e.target.value)}/>
         <input placeholder="Return Date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)}/>
-
         <button onClick={searchFlights}>Search flight</button>
       </div>
+
+      {loaderModal && <LoaderModal />}
 
       {/* render flights from search results */}
       {flights.map((flight, i) => {
         return <Flight key={i} flightInfo={flight} bookFlight={bookFlight}/>
       })}
-
 
     </div>
   )
