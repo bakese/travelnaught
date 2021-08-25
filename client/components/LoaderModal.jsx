@@ -8,13 +8,14 @@ const override = css`
   border-color: blue;
 `;
 
-const LoaderModal = () => {
+const LoaderModal = ({phrase}) => {
 
   let [loading, setLoading] = useState(true);
-  let [color, setColor] = useState("#36D7B7");
+  let [color, setColor] = useState("#0b5ed7");
 
   return (
     <div className="sweet-loading loaderModal">
+      <h3>{phrase}</h3>
       <ClipLoader color={color} loading={loading} css={override} height={4} width={200}/>
     </div>
   )

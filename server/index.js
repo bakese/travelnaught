@@ -23,7 +23,7 @@ app.listen(port, () => {
 
 app.get('/offer_request', (req, res) => {
 
-  console.log('OFFER REQUEST:::', req.query)
+  // console.log('OFFER REQUEST:::', req.query)
 
   duffel.offerRequests.create({
     return_offers: false,
@@ -43,12 +43,11 @@ app.get('/offer_request', (req, res) => {
     cabin_class: "economy"
   })
   .then((response) => {
-    // console.log('Search ID', response.data.id)
 
     return duffel.offers.list({
       // "after": "g2wAAAACbQAAABBBZXJvbWlzdC1LaGFya2l2bQAAAB=",
       // "before": "g2wAAAACbQAAABBBZXJvbWlzdC1LaGFya2l2bQAAAB=",
-      "limit": 5,
+      "limit": 15,
       "offer_request_id": response.data.id,
       "sort": "total_amount"
       // "max_connections": 2
@@ -57,6 +56,7 @@ app.get('/offer_request', (req, res) => {
   })
   .then((response) => {
     // console.log('Offer Id', response.data[0].id)
+    // console.log('SENDING SEARCH RESULTS')
     res.status(200).send(response.data)
   })
   .catch(err => console.error(err))
@@ -65,35 +65,39 @@ app.get('/offer_request', (req, res) => {
 
 app.get('/create_order', (req, res) => {
 
-  console.log('attempting to book')
+  var flightInfo = JSON.parse(req.query.flightInfo);
+  var passengerInfo = JSON.parse(req.query.passengerInfo);
 
-  duffel.orders.create({
-    selected_offers: [req.query.id],
+  return duffel.orders.create({
+    selected_offers: [flightInfo.id],
     payments: [
       {
         type: "balance",
-        currency: req.query.total_currency,
-        amount: req.query.total_amount
+        currency: flightInfo.total_currency,
+        amount: flightInfo.total_amount
       }
     ],
     passengers: [
       {
-        phone_number: "+442080160523",
-        email: "tony@example.com",
-        born_on: "1980-07-24",
-        title: "mr",
-        gender: "m",
-        family_name: "Stark",
-        given_name: "Tony",
-        id: JSON.parse(req.query.passengers[0]).id
+        phone_number: passengerInfo.phoneNumber,
+        email: passengerInfo.email,
+        born_on: passengerInfo.dateOfBirth,
+        title: passengerInfo.title,
+        gender: passengerInfo.gender,
+        family_name: passengerInfo.lastName,
+        given_name: passengerInfo.firstName,
+        id: flightInfo.passengers[0].id
       }
     ]
   })
   .then((response) => {
-    console.log('BOOKING SERVER REAPONSE:::', response)
-    res.status(200).send(response)
+    console.log('BOOKING SERVER REAPONSE:::', response.data)
+    res.status(200).send(response.data)
   })
-  .catch((err) => console.error(err))
+  .catch((err) => {
+    console.error('BOOKING FAILURE::::::', err)
+    res.sendStatus(500)
+  })
 
 
 })
