@@ -23,18 +23,20 @@ app.listen(port, () => {
 
 app.get('/offer_request', (req, res) => {
 
+  console.log('OFFER REQUEST:::', req.query)
+
   duffel.offerRequests.create({
     return_offers: false,
     slices : [
       {
-        origin: "NYC",
-        destination: "ATL",
-        departure_date: "2021-11-21"
+        origin: req.query.origin,
+        destination: req.query.destination,
+        departure_date: req.query.departDate
       },
       {
-        origin: "ATL",
-        destination: "NYC",
-        departure_date: "2021-11-27"
+        origin: req.query.destination,
+        destination: req.query.origin,
+        departure_date: req.query.returnDate
       }
     ],
     passengers: [{ type: "adult" }],
@@ -95,10 +97,3 @@ app.get('/create_order', (req, res) => {
 
 
 })
-
-
-
-
-  //query for the single chosen flight
-  // duffel.offers.get(response.data[0].id)
-  // .then((response) => res.send(response.data))

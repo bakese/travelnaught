@@ -3,12 +3,29 @@ import axios from 'axios';
 import Flight from './Flight.jsx';
 
 
+
 const App = () => {
 
   const [flights, setFlights] = useState([])
+  const [origin, setOrigin] = useState('')
+  const [destination, setDestination] = useState('')
+  const [departDate, setDepartDate] = useState('')
+  const [returnDate, setReturnDate] = useState('')
 
   const searchFlights = () => {
-    axios.get('/offer_request')
+    event.preventDefault()
+    // console.log(origin, destination, departDate, returnDate)
+
+    var data =  {
+      origin: origin,
+      destination: destination,
+      departDate: departDate,
+      returnDate: returnDate
+    }
+
+    axios.get('/offer_request', {
+      params: data
+    })
     .then((response) => {
       setFlights(response.data)
     })
@@ -30,12 +47,20 @@ const App = () => {
 
   }
 
-
   return (
-    <div>
-      <h1>Travel Stuff</h1>
-      <button onClick={searchFlights}>Search flight</button>
+    <div className="main">
+      <h1>Wander</h1>
 
+      <div className="searchBar">
+        <input placeholder="Origin" value={origin} onChange={(e) => setOrigin(e.target.value)}/>
+        <input placeholder="Destination" value={destination} onChange={(e) => setDestination(e.target.value)}/>
+        <input placeholder="Depart Date" value={departDate} onChange={(e) => setDepartDate(e.target.value)}/>
+        <input placeholder="Return Date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)}/>
+
+        <button onClick={searchFlights}>Search flight</button>
+      </div>
+
+      {/* render flights from search results */}
       {flights.map((flight, i) => {
         return <Flight key={i} flightInfo={flight} bookFlight={bookFlight}/>
       })}
